@@ -11,9 +11,14 @@ const (
 )
 
 type Product struct {
-	ID     primitive.ObjectID `bson:"_id" json:"-"`
-	Title  string             `bson:"title" form:"title" binding:"required" json:"title"`
-	UserID primitive.ObjectID `bson:"userID" json:"-"`
+	ID          primitive.ObjectID `bson:"_id" json:"-"`
+	Title       string             `bson:"title" form:"title" binding:"required" json:"title"`
+	Description string             `bson:"description" json:"description"`
+	Price       float64            `bson:"price" json:"price"`
+	SalePrice   float64            `bson:"salePrice" json:"salePrice"`
+	Stock       int                `bson:"stock" json:"stock"`
+	Review      int                `bson:"review" json:"review"`
+	UserID      primitive.ObjectID `bson:"userID" json:"-"`
 }
 
 type ProductRepository interface {
