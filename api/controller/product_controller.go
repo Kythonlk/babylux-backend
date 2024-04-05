@@ -9,42 +9,42 @@ import (
 )
 
 type ProductController struct {
-	TaskUsecase domain.TaskUsecase
+	ProductUsecase domain.ProductUsecase
 }
 
 func (tc *ProductController) Create(c *gin.Context) {
-	var products domain.Products
+	var product domain.Product
 
-	err := c.ShouldBind(&products)
+	err := c.ShouldBind(&product)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	userID := c.GetString("x-user-id")
-	products.ID = primitive.NewObjectID()
+	product.ID = primitive.NewObjectID()
 
-	products.UserID, err = primitive.ObjectIDFromHex(userID)
+	product.UserID, err = primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	err = tc.ProductsUsecase.Create(c, &products)
+	err = tc.ProductUsecase.Create(c, &product)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, domain.SuccessResponse{
-		Message: "Task created successfully",
+		Message: "Product created successfully",
 	})
 }
 
 func (u *ProductController) Fetch(c *gin.Context) {
 	userID := c.GetString("x-user-id")
 
-	products, err := u.ProductsUsecase.FetchByUserID(c, userID)
+	products, err := u.ProductUsecase.FetchByUserID(c, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return

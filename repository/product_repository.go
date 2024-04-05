@@ -9,34 +9,34 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type taskRepository struct {
+type productRepository struct {
 	database   mongo.Database
 	collection string
 }
 
-func NewTaskRepository(db mongo.Database, collection string) domain.TaskRepository {
-	return &taskRepository{
+func NewProductRepository(db mongo.Database, collection string) domain.ProductRepository {
+	return &productRepository{
 		database:   db,
 		collection: collection,
 	}
 }
 
-func (tr *taskRepository) Create(c context.Context, task *domain.Task) error {
+func (tr *productRepository) Create(c context.Context, product *domain.Product) error {
 	collection := tr.database.Collection(tr.collection)
 
-	_, err := collection.InsertOne(c, task)
+	_, err := collection.InsertOne(c, product)
 
 	return err
 }
 
-func (tr *taskRepository) FetchByUserID(c context.Context, userID string) ([]domain.Task, error) {
+func (tr *productRepository) FetchByUserID(c context.Context, userID string) ([]domain.Product, error) {
 	collection := tr.database.Collection(tr.collection)
 
-	var tasks []domain.Task
+	var products []domain.Product
 
 	idHex, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		return tasks, err
+		return products, err
 	}
 
 	cursor, err := collection.Find(c, bson.M{"userID": idHex})
@@ -44,10 +44,10 @@ func (tr *taskRepository) FetchByUserID(c context.Context, userID string) ([]dom
 		return nil, err
 	}
 
-	err = cursor.All(c, &tasks)
-	if tasks == nil {
-		return []domain.Task{}, err
+	err = cursor.All(c, &products)
+	if products == nil {
+		return []domain.Product{}, err
 	}
 
-	return tasks, err
+	return products, err
 }
